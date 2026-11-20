@@ -1,0 +1,6 @@
+{
+  "name": "ShopZayn",
+  "description": "ShopZayn — Curated modern apparel, timepieces, leather goods, fragrances, and home objects with nationwide Cash on Delivery across Pakistan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
