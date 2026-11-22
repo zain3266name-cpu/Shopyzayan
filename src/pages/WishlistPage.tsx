@@ -4,28 +4,22 @@ import { formatPkr, getDiscountPercent, getPrimaryProductBadge } from '../config
 import { useStore } from '../context/StoreContext';
 
 export function WishlistPage() {
-  const {
-    wishlistProducts,
-    toggleWishlist,
-    clearWishlist,
-    addToCart,
-    navigate,
-  } = useStore();
+  const { wishlistProducts, toggleWishlist, clearWishlist, addToCart, navigate } = useStore();
 
   return (
     <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-[#713BDB]/15">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-[#713BDB]/15 dark:border-white/10">
         <div>
           <p className="text-xs uppercase tracking-[0.12em] text-[#FF626E] font-bold">
             Saved Items
           </p>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#24213A] mt-1">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-1">
             Wishlist
           </h1>
         </div>
         {wishlistProducts.length > 0 && (
           <div className="flex items-center gap-4">
-            <span className="text-sm text-[#5C577A] tabular-nums">
+            <span className="text-sm text-[#5C577A] dark:text-[#B8B3D1] tabular-nums">
               {wishlistProducts.length} {wishlistProducts.length === 1 ? 'item' : 'items'}
             </span>
             <button
@@ -41,11 +35,13 @@ export function WishlistPage() {
 
       {wishlistProducts.length === 0 ? (
         <div className="py-20 text-center max-w-md mx-auto">
-          <div className="w-16 h-16 rounded-2xl bg-white border border-[#713BDB]/15 shadow-xs flex items-center justify-center text-[#FF626E] mx-auto mb-5">
+          <div className="w-16 h-16 rounded-2xl bg-white dark:bg-[#1C192E] border border-[#713BDB]/15 dark:border-white/10 shadow-xs flex items-center justify-center text-[#FF626E] mx-auto mb-5">
             <Heart className="w-7 h-7 stroke-[1.75]" />
           </div>
-          <h2 className="font-display text-2xl font-bold text-[#24213A]">Your wishlist is empty</h2>
-          <p className="text-sm text-[#5C577A] mt-2">
+          <h2 className="font-display text-2xl font-bold text-[#24213A] dark:text-[#F4F2FF]">
+            Your wishlist is empty
+          </h2>
+          <p className="text-sm text-[#5C577A] dark:text-[#B8B3D1] mt-2">
             Tap the heart icon on any product to save favorites here for quick access later.
           </p>
           <button
@@ -72,9 +68,9 @@ export function WishlistPage() {
             return (
               <article
                 key={product.id}
-                className="group h-full flex flex-col bg-white rounded-2xl border border-[#713BDB]/10 shadow-xs hover:shadow-md transition-all overflow-hidden"
+                className="group h-full flex flex-col bg-white dark:bg-[#1C192E] rounded-2xl border border-[#713BDB]/10 dark:border-white/10 shadow-xs hover:shadow-md transition-all overflow-hidden"
               >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F1EEFC]">
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F1EEFC] dark:bg-[#26223D]">
                   <button
                     type="button"
                     onClick={() => navigate('product', { slug: product.slug })}
@@ -102,27 +98,27 @@ export function WishlistPage() {
                     onClick={() => toggleWishlist(product)}
                     aria-label={`Remove ${product.name} from wishlist`}
                     title="Remove from wishlist"
-                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 backdrop-blur-xs border border-black/5 flex items-center justify-center text-[#5C577A] hover:text-[#FF626E] transition-colors"
+                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 dark:bg-[#1C192E]/95 backdrop-blur-xs border border-black/5 dark:border-white/15 flex items-center justify-center text-[#5C577A] dark:text-[#B8B3D1] hover:text-[#FF626E] transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
                 <div className="p-3.5 sm:p-4 flex flex-col gap-2 flex-1">
-                  <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.07em] text-[#6B6589] font-semibold truncate">
+                  <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.07em] text-[#6B6589] dark:text-[#B8B3D1] font-semibold truncate">
                     {product.category}
                   </span>
 
                   <button
                     type="button"
                     onClick={() => navigate('product', { slug: product.slug })}
-                    className="text-left text-[13px] sm:text-[15px] font-semibold text-[#24213A] hover:text-[#713BDB] line-clamp-2 leading-snug"
+                    className="text-left text-[13px] sm:text-[15px] font-semibold text-[#24213A] dark:text-[#F4F2FF] hover:text-[#713BDB] dark:hover:text-[#A78BFA] line-clamp-2 leading-snug"
                   >
                     {product.name}
                   </button>
 
                   <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-2 tabular-nums">
-                    <span className="text-sm sm:text-base font-bold text-[#24213A]">
+                    <span className="text-sm sm:text-base font-bold text-[#24213A] dark:text-[#F4F2FF]">
                       {formatPkr(product.pricePkr)}
                     </span>
                     {product.originalPricePkr && product.originalPricePkr > product.pricePkr && (

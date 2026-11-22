@@ -17,20 +17,20 @@ export function RecentlyViewedSection({ excludeProductId }: RecentlyViewedSectio
   }
 
   return (
-    <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-[#713BDB]/10">
+    <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-[#713BDB]/10 dark:border-white/10">
       <div className="flex items-end justify-between gap-4 mb-7">
         <div>
-          <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] font-semibold">
+          <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] dark:text-[#A78BFA] font-semibold">
             Your History
           </p>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] mt-1">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-1">
             Recently Viewed
           </h2>
         </div>
         <button
           type="button"
           onClick={() => navigate('shop', { category: 'All', collection: 'all' })}
-          className="text-sm font-semibold text-[#713BDB] hover:underline underline-offset-4 whitespace-nowrap"
+          className="text-sm font-semibold text-[#713BDB] dark:text-[#A78BFA] hover:underline underline-offset-4 whitespace-nowrap"
         >
           View Catalog
         </button>

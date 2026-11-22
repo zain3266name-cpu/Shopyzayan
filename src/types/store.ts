@@ -79,12 +79,16 @@ export interface CheckoutFormData {
   paymentMethod: 'COD';
 }
 
+export type ThemeMode = 'light' | 'dark';
+
 export interface OrderRecord {
   orderNumber: string;
   createdAtIso: string;
   customer: CheckoutFormData;
   items: CartItem[];
   subtotalPkr: number;
+  discountPkr?: number;
+  promoCode?: string;
   shippingPkr: number;
   totalPkr: number;
   whatsappMessage: string;

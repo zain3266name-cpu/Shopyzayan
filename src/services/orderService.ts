@@ -2,18 +2,44 @@ import { STORE_CONFIG, formatPkr } from '../config/storeConfig';
 import { CartItem, CheckoutFormData, OrderRecord } from '../types/store';
 import { storageService } from './storageService';
 
-export function calculateCartTotals(items: CartItem[]) {
+export function resolvePromoCode(code?: string) {
+  const normalized = (code || '').trim().toUpperCase();
+  if (!normalized) return null;
+  if (normalized === 'ZAYN10') {
+    return { code: 'ZAYN10', ...STORE_CONFIG.promoCodes.ZAYN10 };
+  }
+  if (normalized === 'FREESHIP') {
+    return { code: 'FREESHIP', ...STORE_CONFIG.promoCodes.FREESHIP };
+  }
+  return null;
+}
+
+export function calculateCartTotals(items: CartItem[], promoCode?: string) {
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotalPkr = items.reduce((sum, item) => sum + item.pricePkr * item.quantity, 0);
+  const promo = resolvePromoCode(promoCode);
+
+  const discountPkr =
+    promo && promo.type === 'percent' && subtotalPkr > 0
+      ? Math.round((subtotalPkr * promo.value) / 100)
+      : 0;
+
+  const discountedSubtotal = Math.max(0, subtotalPkr - discountPkr);
+
   const shippingPkr =
-    subtotalPkr === 0 || subtotalPkr >= STORE_CONFIG.freeShippingThresholdPkr
+    subtotalPkr === 0 ||
+    discountedSubtotal >= STORE_CONFIG.freeShippingThresholdPkr ||
+    promo?.type === 'freeShipping'
       ? 0
       : STORE_CONFIG.standardShippingFeePkr;
-  const totalPkr = subtotalPkr + shippingPkr;
+
+  const totalPkr = discountedSubtotal + shippingPkr;
 
   return {
     itemCount,
     subtotalPkr,
+    discountPkr,
+    appliedPromoCode: promo?.code ?? null,
     shippingPkr,
     totalPkr,
   };
@@ -25,7 +51,9 @@ export function buildWhatsAppOrderMessage(
   items: CartItem[],
   subtotalPkr: number,
   shippingPkr: number,
-  totalPkr: number
+  totalPkr: number,
+  discountPkr = 0,
+  promoCode?: string | null
 ): string {
   const itemLines = items.map((item, idx) => {
     const variantParts = [
@@ -50,6 +78,7 @@ export function buildWhatsAppOrderMessage(
     ...itemLines,
     ``,
     `Subtotal: ${formatPkr(subtotalPkr)}`,
+    discountPkr > 0 && promoCode ? `Promo (${promoCode}): -${formatPkr(discountPkr)}` : null,
     `Delivery: ${shippingPkr === 0 ? 'FREE' : formatPkr(shippingPkr)}`,
     `*Total Payable (COD): ${formatPkr(totalPkr)}*`,
     ``,
@@ -76,8 +105,13 @@ export function buildWhatsAppUrl(message: string): string {
  * ready for Phase 2 server/Firebase order persistence.
  */
 export const orderService = {
-  prepareWhatsAppOrder(customer: CheckoutFormData, items: CartItem[]): OrderRecord {
-    const { subtotalPkr, shippingPkr, totalPkr } = calculateCartTotals(items);
+  prepareWhatsAppOrder(
+    customer: CheckoutFormData,
+    items: CartItem[],
+    promoCode?: string
+  ): OrderRecord {
+    const { subtotalPkr, discountPkr, appliedPromoCode, shippingPkr, totalPkr } =
+      calculateCartTotals(items, promoCode);
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const orderNumber = `SZ-${new Date().getFullYear()}-${randomSuffix}`;
     const whatsappMessage = buildWhatsAppOrderMessage(
@@ -86,7 +120,9 @@ export const orderService = {
       items,
       subtotalPkr,
       shippingPkr,
-      totalPkr
+      totalPkr,
+      discountPkr,
+      appliedPromoCode
     );
     const whatsappUrl = buildWhatsAppUrl(whatsappMessage);
 
@@ -96,6 +132,8 @@ export const orderService = {
       customer,
       items,
       subtotalPkr,
+      discountPkr,
+      promoCode: appliedPromoCode ?? undefined,
       shippingPkr,
       totalPkr,
       whatsappMessage,

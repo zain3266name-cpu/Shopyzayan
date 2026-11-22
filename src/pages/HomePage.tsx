@@ -87,10 +87,12 @@ export function HomePage() {
   );
   const specialOffers = useMemo(
     () =>
-      catalogService.queryProducts({
-        collection: 'onSale',
-        sortBy: 'discountDesc',
-      }).slice(0, 4),
+      catalogService
+        .queryProducts({
+          collection: 'onSale',
+          sortBy: 'discountDesc',
+        })
+        .slice(0, 4),
     []
   );
 
@@ -168,49 +170,53 @@ export function HomePage() {
           aria-label="ShopZayn customer trust assurances"
           className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         >
-          <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-white border border-[#713BDB]/10 shadow-xs">
-            <span className="w-10 h-10 rounded-xl bg-[#713BDB]/10 text-[#713BDB] flex items-center justify-center shrink-0">
+          <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1C192E] border border-[#713BDB]/10 dark:border-white/10 shadow-xs transition-colors">
+            <span className="w-10 h-10 rounded-xl bg-[#713BDB]/10 dark:bg-[#713BDB]/25 text-[#713BDB] dark:text-[#A78BFA] flex items-center justify-center shrink-0">
               <Banknote className="w-5 h-5" />
             </span>
             <div>
-              <p className="text-sm font-bold text-[#24213A]">Cash on Delivery</p>
-              <p className="text-xs text-[#5C577A] mt-0.5">
+              <p className="text-sm font-bold text-[#24213A] dark:text-[#F4F2FF]">Cash on Delivery</p>
+              <p className="text-xs text-[#5C577A] dark:text-[#B8B3D1] mt-0.5">
                 Pay in cash at your doorstep across Pakistan
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-white border border-[#713BDB]/10 shadow-xs">
-            <span className="w-10 h-10 rounded-xl bg-[#28C5D7]/15 text-[#0E7490] flex items-center justify-center shrink-0">
+          <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1C192E] border border-[#713BDB]/10 dark:border-white/10 shadow-xs transition-colors">
+            <span className="w-10 h-10 rounded-xl bg-[#28C5D7]/15 text-[#0E7490] dark:text-[#28C5D7] flex items-center justify-center shrink-0">
               <Truck className="w-5 h-5" />
             </span>
             <div>
-              <p className="text-sm font-bold text-[#24213A]">Nationwide Delivery</p>
-              <p className="text-xs text-[#5C577A] mt-0.5">
+              <p className="text-sm font-bold text-[#24213A] dark:text-[#F4F2FF]">
+                Nationwide Delivery
+              </p>
+              <p className="text-xs text-[#5C577A] dark:text-[#B8B3D1] mt-0.5">
                 Free shipping above {formatPkr(STORE_CONFIG.freeShippingThresholdPkr)}
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-white border border-[#713BDB]/10 shadow-xs">
-            <span className="w-10 h-10 rounded-xl bg-[#FFC83D]/25 text-[#854D0E] flex items-center justify-center shrink-0">
+          <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1C192E] border border-[#713BDB]/10 dark:border-white/10 shadow-xs transition-colors">
+            <span className="w-10 h-10 rounded-xl bg-[#FFC83D]/25 text-[#854D0E] dark:text-[#FFC83D] flex items-center justify-center shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </span>
             <div>
-              <p className="text-sm font-bold text-[#24213A]">Secure Order Experience</p>
-              <p className="text-xs text-[#5C577A] mt-0.5">
+              <p className="text-sm font-bold text-[#24213A] dark:text-[#F4F2FF]">
+                Secure Order Experience
+              </p>
+              <p className="text-xs text-[#5C577A] dark:text-[#B8B3D1] mt-0.5">
                 Verified PKR receipts & 7-day easy exchange
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-white border border-[#713BDB]/10 shadow-xs">
-            <span className="w-10 h-10 rounded-xl bg-[#FF626E]/15 text-[#BE123C] flex items-center justify-center shrink-0">
+          <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1C192E] border border-[#713BDB]/10 dark:border-white/10 shadow-xs transition-colors">
+            <span className="w-10 h-10 rounded-xl bg-[#FF626E]/15 text-[#BE123C] dark:text-[#FF626E] flex items-center justify-center shrink-0">
               <MessageCircle className="w-5 h-5" />
             </span>
             <div>
-              <p className="text-sm font-bold text-[#24213A]">Customer Support</p>
-              <p className="text-xs text-[#5C577A] mt-0.5">
+              <p className="text-sm font-bold text-[#24213A] dark:text-[#F4F2FF]">Customer Support</p>
+              <p className="text-xs text-[#5C577A] dark:text-[#B8B3D1] mt-0.5">
                 Direct WhatsApp help · {STORE_CONFIG.dispatchHours}
               </p>
             </div>
@@ -222,17 +228,17 @@ export function HomePage() {
       <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14">
         <div className="flex items-end justify-between gap-4 mb-7">
           <div>
-            <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] font-bold">
+            <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] dark:text-[#A78BFA] font-bold">
               Shop by Department
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] mt-1">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-1">
               Explore Categories
             </h2>
           </div>
           <button
             type="button"
             onClick={() => navigate('shop', { category: 'All', collection: 'all' })}
-            className="text-sm font-semibold text-[#713BDB] hover:underline underline-offset-4 whitespace-nowrap"
+            className="text-sm font-semibold text-[#713BDB] dark:text-[#A78BFA] hover:underline underline-offset-4 whitespace-nowrap"
           >
             View All
           </button>
@@ -246,9 +252,9 @@ export function HomePage() {
                 key={cat.title}
                 type="button"
                 onClick={() => navigate('shop', { category: cat.category, collection: 'all' })}
-                className="group text-left bg-white rounded-2xl border border-[#713BDB]/10 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden focus-visible:outline-2 focus-visible:outline-[#713BDB]"
+                className="group text-left bg-white dark:bg-[#1C192E] rounded-2xl border border-[#713BDB]/10 dark:border-white/10 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden focus-visible:outline-2 focus-visible:outline-[#713BDB]"
               >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F1EEFC]">
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F1EEFC] dark:bg-[#26223D]">
                   <ProductImage
                     src={cat.image}
                     alt={cat.title}
@@ -263,12 +269,14 @@ export function HomePage() {
                 </div>
                 <div className="p-3.5 sm:p-4 flex items-center justify-between gap-2">
                   <div className="min-w-0">
-                    <h3 className="text-sm sm:text-base font-bold text-[#24213A] group-hover:text-[#713BDB] transition-colors truncate">
+                    <h3 className="text-sm sm:text-base font-bold text-[#24213A] dark:text-[#F4F2FF] group-hover:text-[#713BDB] dark:group-hover:text-[#A78BFA] transition-colors truncate">
                       {cat.title}
                     </h3>
-                    <p className="text-xs text-[#5C577A] mt-0.5 truncate">{cat.subtitle}</p>
+                    <p className="text-xs text-[#5C577A] dark:text-[#B8B3D1] mt-0.5 truncate">
+                      {cat.subtitle}
+                    </p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#713BDB] group-hover:translate-x-0.5 transition-transform shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-[#713BDB] dark:text-[#A78BFA] group-hover:translate-x-0.5 transition-transform shrink-0" />
                 </div>
               </button>
             );
@@ -277,20 +285,20 @@ export function HomePage() {
       </section>
 
       {/* 4. Product Section: Featured Products */}
-      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 border-t border-[#713BDB]/10">
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 border-t border-[#713BDB]/10 dark:border-white/10">
         <div className="flex items-end justify-between gap-4 mb-7">
           <div>
-            <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] font-bold">
+            <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] dark:text-[#A78BFA] font-bold">
               Curated Edit
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] mt-1">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-1">
               Featured Products
             </h2>
           </div>
           <button
             type="button"
             onClick={() => navigate('shop', { category: 'All', collection: 'trending' })}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#713BDB] hover:underline underline-offset-4 whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#713BDB] dark:text-[#A78BFA] hover:underline underline-offset-4 whitespace-nowrap"
           >
             <span>See All</span>
             <ArrowRight className="w-4 h-4" />
@@ -306,13 +314,13 @@ export function HomePage() {
 
       {/* 5. Product Section: Special Offers */}
       <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="rounded-3xl bg-gradient-to-br from-[#FFF1F3] via-[#FBF7FF] to-[#FFF9E8] border border-[#FF626E]/20 p-5 sm:p-8 lg:p-10">
+        <div className="rounded-3xl bg-gradient-to-br from-[#FFF1F3] via-[#FBF7FF] to-[#FFF9E8] dark:from-[#261926] dark:via-[#1C192E] dark:to-[#241E2B] border border-[#FF626E]/20 dark:border-[#FF626E]/25 p-5 sm:p-8 lg:p-10 transition-colors">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
             <div>
               <p className="text-xs uppercase tracking-[0.12em] text-[#FF626E] font-bold">
                 Limited Seasonal Markdowns
               </p>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] mt-1">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-1">
                 Special Offers
               </h2>
             </div>
@@ -338,17 +346,17 @@ export function HomePage() {
       <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex items-end justify-between gap-4 mb-7">
           <div>
-            <p className="text-xs uppercase tracking-[0.12em] text-[#9A6B2F] font-bold">
+            <p className="text-xs uppercase tracking-[0.12em] text-[#9A6B2F] dark:text-[#FFC83D] font-bold">
               Customer Favorites
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] mt-1">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-1">
               Best Sellers
             </h2>
           </div>
           <button
             type="button"
             onClick={() => navigate('shop', { category: 'All', collection: 'bestSeller' })}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#713BDB] hover:underline underline-offset-4 whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#713BDB] dark:text-[#A78BFA] hover:underline underline-offset-4 whitespace-nowrap"
           >
             <span>See All</span>
             <ArrowRight className="w-4 h-4" />
@@ -363,20 +371,20 @@ export function HomePage() {
       </section>
 
       {/* 7. Product Section: New Arrivals */}
-      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 border-t border-[#713BDB]/10">
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 border-t border-[#713BDB]/10 dark:border-white/10">
         <div className="flex items-end justify-between gap-4 mb-7">
           <div>
-            <p className="text-xs uppercase tracking-[0.12em] text-[#0E7490] font-bold">
+            <p className="text-xs uppercase tracking-[0.12em] text-[#0E7490] dark:text-[#28C5D7] font-bold">
               Fresh Drops
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] mt-1">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-1">
               New Arrivals
             </h2>
           </div>
           <button
             type="button"
             onClick={() => navigate('shop', { category: 'All', collection: 'newArrival' })}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#713BDB] hover:underline underline-offset-4 whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#713BDB] dark:text-[#A78BFA] hover:underline underline-offset-4 whitespace-nowrap"
           >
             <span>See All</span>
             <ArrowRight className="w-4 h-4" />
@@ -392,7 +400,7 @@ export function HomePage() {
 
       {/* 8. Editorial Craft Banner */}
       <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-        <div className="rounded-3xl overflow-hidden border border-[#713BDB]/15 bg-white shadow-sm grid grid-cols-1 lg:grid-cols-12 items-stretch">
+        <div className="rounded-3xl overflow-hidden border border-[#713BDB]/15 dark:border-white/10 bg-white dark:bg-[#1C192E] shadow-sm grid grid-cols-1 lg:grid-cols-12 items-stretch">
           <div className="lg:col-span-7 relative min-h-[240px] sm:min-h-[340px]">
             <ProductImage
               src={HERO_MEDIA.atelierImage}
@@ -402,13 +410,13 @@ export function HomePage() {
             />
           </div>
           <div className="lg:col-span-5 p-7 sm:p-10 lg:p-12 flex flex-col justify-center">
-            <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] font-bold">
+            <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] dark:text-[#A78BFA] font-bold">
               Small-Batch Craftsmanship
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] mt-2 leading-snug">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-2 leading-snug">
               Built in Small Batches, Priced Transparently
             </h2>
-            <p className="mt-3 text-sm text-[#5C577A] leading-relaxed">
+            <p className="mt-3 text-sm text-[#5C577A] dark:text-[#B8B3D1] leading-relaxed">
               We partner directly with skilled Pakistani leather ateliers and international movement
               makers—bringing gallery-grade pieces directly to your doorstep without retail markups.
             </p>
@@ -423,7 +431,7 @@ export function HomePage() {
               <button
                 type="button"
                 onClick={() => navigate('about')}
-                className="px-5 py-3 bg-[#F8F6FF] border border-[#713BDB]/20 text-[#24213A] text-sm font-semibold rounded-xl hover:border-[#713BDB] transition-colors whitespace-nowrap"
+                className="px-5 py-3 bg-[#F8F6FF] dark:bg-[#26223D] border border-[#713BDB]/20 dark:border-white/15 text-[#24213A] dark:text-[#F4F2FF] text-sm font-semibold rounded-xl hover:border-[#713BDB] transition-colors whitespace-nowrap"
               >
                 Our Story
               </button>
@@ -437,12 +445,12 @@ export function HomePage() {
 
       {/* 10. Newsletter Section */}
       <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
-        <div className="rounded-3xl bg-white border border-[#713BDB]/15 p-7 sm:p-10 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div className="rounded-3xl bg-white dark:bg-[#1C192E] border border-[#713BDB]/15 dark:border-white/10 p-7 sm:p-10 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-8">
           <div className="max-w-lg">
-            <h2 className="font-display text-2xl font-bold text-[#24213A]">
+            <h2 className="font-display text-2xl font-bold text-[#24213A] dark:text-[#F4F2FF]">
               Join the ShopZayn Dispatch
             </h2>
-            <p className="text-sm text-[#5C577A] mt-1.5">
+            <p className="text-sm text-[#5C577A] dark:text-[#B8B3D1] mt-1.5">
               Receive notes on new batch arrivals, restocks, and exclusive seasonal markdowns.
             </p>
           </div>
@@ -463,7 +471,7 @@ export function HomePage() {
                 if (newsletterDone) setNewsletterDone(false);
               }}
               placeholder="you@example.com"
-              className="flex-1 px-4 py-3 text-sm bg-[#F8F6FF] border border-[#713BDB]/20 rounded-xl text-[#24213A] placeholder:text-[#8E89A8] focus:outline-none focus:bg-white focus:border-[#713BDB]"
+              className="flex-1 px-4 py-3 text-sm bg-[#F8F6FF] dark:bg-[#26223D] border border-[#713BDB]/20 dark:border-white/15 rounded-xl text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:outline-none focus:bg-white dark:focus:bg-[#2E294A] focus:border-[#713BDB]"
             />
             <button
               type="submit"

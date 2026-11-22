@@ -45,14 +45,14 @@ export function ContactPage() {
 
   return (
     <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
-      <div className="max-w-2xl pb-10 border-b border-[#713BDB]/15">
-        <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] font-bold">
+      <div className="max-w-2xl pb-10 border-b border-[#713BDB]/15 dark:border-white/10">
+        <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] dark:text-[#A78BFA] font-bold">
           Customer Care
         </p>
-        <h1 className="font-display text-3xl sm:text-5xl font-bold text-[#24213A] mt-2">
+        <h1 className="font-display text-3xl sm:text-5xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-2">
           Get in Touch
         </h1>
-        <p className="mt-3 text-base text-[#5C577A] leading-relaxed">
+        <p className="mt-3 text-base text-[#5C577A] dark:text-[#B8B3D1] leading-relaxed">
           Questions about sizing, Cash on Delivery timelines, or bulk corporate gifting? Reach our
           desk directly via WhatsApp or send us a note below.
         </p>
@@ -60,10 +60,12 @@ export function ContactPage() {
 
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         <div className="lg:col-span-5 space-y-6">
-          <div className="p-6 rounded-2xl border border-emerald-200 bg-[#F4FBF7] space-y-4">
+          <div className="p-6 rounded-2xl border border-emerald-200 dark:border-emerald-500/30 bg-[#F4FBF7] dark:bg-emerald-950/30 space-y-4">
             <div className="space-y-1">
-              <h2 className="font-display text-lg font-bold text-[#24213A]">WhatsApp Order Desk</h2>
-              <p className="text-sm text-[#5C577A]">
+              <h2 className="font-display text-lg font-bold text-[#24213A] dark:text-[#F4F2FF]">
+                WhatsApp Order Desk
+              </h2>
+              <p className="text-sm text-[#5C577A] dark:text-[#B8B3D1]">
                 Fastest response for product questions, sizing advice, and parcel tracking.
               </p>
             </div>
@@ -78,14 +80,14 @@ export function ContactPage() {
             </a>
           </div>
 
-          <div className="rounded-2xl border border-[#713BDB]/10 bg-white shadow-xs divide-y divide-[#713BDB]/10">
+          <div className="rounded-2xl border border-[#713BDB]/10 dark:border-white/10 bg-white dark:bg-[#1C192E] shadow-xs divide-y divide-[#713BDB]/10 dark:divide-white/10">
             <div className="p-5 flex items-start gap-3.5">
-              <Phone className="w-4 h-4 text-[#713BDB] mt-1 shrink-0" />
+              <Phone className="w-4 h-4 text-[#713BDB] dark:text-[#A78BFA] mt-1 shrink-0" />
               <div>
-                <p className="text-xs uppercase tracking-[0.08em] text-[#6B6589] font-semibold">
+                <p className="text-xs uppercase tracking-[0.08em] text-[#6B6589] dark:text-[#9892B8] font-semibold">
                   Phone / WhatsApp
                 </p>
-                <p className="text-sm font-semibold text-[#24213A] mt-0.5 font-mono">
+                <p className="text-sm font-semibold text-[#24213A] dark:text-[#F4F2FF] mt-0.5 font-mono">
                   {STORE_CONFIG.whatsappDisplay}
                 </p>
               </div>
@@ -94,34 +96,34 @@ export function ContactPage() {
             <div className="p-5 flex items-start gap-3.5">
               <Mail className="w-4 h-4 text-[#FF626E] mt-1 shrink-0" />
               <div>
-                <p className="text-xs uppercase tracking-[0.08em] text-[#6B6589] font-semibold">
+                <p className="text-xs uppercase tracking-[0.08em] text-[#6B6589] dark:text-[#9892B8] font-semibold">
                   Email
                 </p>
-                <p className="text-sm font-semibold text-[#24213A] mt-0.5">
+                <p className="text-sm font-semibold text-[#24213A] dark:text-[#F4F2FF] mt-0.5">
                   {STORE_CONFIG.supportEmail}
                 </p>
               </div>
             </div>
 
             <div className="p-5 flex items-start gap-3.5">
-              <Clock className="w-4 h-4 text-[#0E7490] mt-1 shrink-0" />
+              <Clock className="w-4 h-4 text-[#0E7490] dark:text-[#28C5D7] mt-1 shrink-0" />
               <div>
-                <p className="text-xs uppercase tracking-[0.08em] text-[#6B6589] font-semibold">
+                <p className="text-xs uppercase tracking-[0.08em] text-[#6B6589] dark:text-[#9892B8] font-semibold">
                   Support Hours
                 </p>
-                <p className="text-sm font-semibold text-[#24213A] mt-0.5">
+                <p className="text-sm font-semibold text-[#24213A] dark:text-[#F4F2FF] mt-0.5">
                   {STORE_CONFIG.dispatchHours}
                 </p>
               </div>
             </div>
 
             <div className="p-5 flex items-start gap-3.5">
-              <MapPin className="w-4 h-4 text-[#9A6B2F] mt-1 shrink-0" />
+              <MapPin className="w-4 h-4 text-[#9A6B2F] dark:text-[#FFC83D] mt-1 shrink-0" />
               <div>
-                <p className="text-xs uppercase tracking-[0.08em] text-[#6B6589] font-semibold">
+                <p className="text-xs uppercase tracking-[0.08em] text-[#6B6589] dark:text-[#9892B8] font-semibold">
                   Dispatch Hubs
                 </p>
-                <p className="text-sm font-semibold text-[#24213A] mt-0.5">
+                <p className="text-sm font-semibold text-[#24213A] dark:text-[#F4F2FF] mt-0.5">
                   {STORE_CONFIG.studioLocations}
                 </p>
               </div>
@@ -129,12 +131,14 @@ export function ContactPage() {
           </div>
         </div>
 
-        <div className="lg:col-span-7 rounded-2xl border border-[#713BDB]/15 bg-white p-6 sm:p-8 shadow-xs">
+        <div className="lg:col-span-7 rounded-2xl border border-[#713BDB]/15 dark:border-white/10 bg-white dark:bg-[#1C192E] p-6 sm:p-8 shadow-xs">
           {submitted ? (
             <div className="py-10 text-center space-y-3">
-              <CheckCircle2 className="w-10 h-10 text-emerald-700 mx-auto" />
-              <h2 className="font-display text-2xl font-bold text-[#24213A]">Message Received</h2>
-              <p className="text-sm text-[#5C577A] max-w-md mx-auto">
+              <CheckCircle2 className="w-10 h-10 text-emerald-700 dark:text-emerald-300 mx-auto" />
+              <h2 className="font-display text-2xl font-bold text-[#24213A] dark:text-[#F4F2FF]">
+                Message Received
+              </h2>
+              <p className="text-sm text-[#5C577A] dark:text-[#B8B3D1] max-w-md mx-auto">
                 Thank you for reaching out to {STORE_CONFIG.brandName}. Our team responds within
                 one business day—or reach us immediately via WhatsApp.
               </p>
@@ -142,7 +146,7 @@ export function ContactPage() {
                 <button
                   type="button"
                   onClick={() => setSubmitted(false)}
-                  className="px-4 py-2.5 bg-[#F8F6FF] border border-[#713BDB]/20 text-sm font-semibold text-[#24213A] rounded-xl hover:border-[#713BDB]"
+                  className="px-4 py-2.5 bg-[#F8F6FF] dark:bg-[#26223D] border border-[#713BDB]/20 dark:border-white/15 text-sm font-semibold text-[#24213A] dark:text-[#F4F2FF] rounded-xl hover:border-[#713BDB]"
                 >
                   Send Another Note
                 </button>
@@ -159,11 +163,16 @@ export function ContactPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
-              <h2 className="font-display text-xl font-bold text-[#24213A]">Send a Message</h2>
+              <h2 className="font-display text-xl font-bold text-[#24213A] dark:text-[#F4F2FF]">
+                Send a Message
+              </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="contact-name" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+                  <label
+                    htmlFor="contact-name"
+                    className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+                  >
                     Your Name <span className="text-[#FF626E]">*</span>
                   </label>
                   <input
@@ -173,12 +182,15 @@ export function ContactPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Ayesha Khan"
-                    className="w-full px-3.5 py-2.5 text-sm bg-[#F8F6FF] border border-[#713BDB]/20 rounded-xl text-[#24213A] focus:bg-white focus:outline-none focus:border-[#713BDB]"
+                    className="w-full px-3.5 py-2.5 text-sm bg-[#F8F6FF] dark:bg-[#26223D] border border-[#713BDB]/20 dark:border-white/15 rounded-xl text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none focus:border-[#713BDB]"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="contact-phone" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+                  <label
+                    htmlFor="contact-phone"
+                    className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+                  >
                     Phone / WhatsApp
                   </label>
                   <input
@@ -187,13 +199,16 @@ export function ContactPage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="0300-1234567"
-                    className="w-full px-3.5 py-2.5 text-sm bg-[#F8F6FF] border border-[#713BDB]/20 rounded-xl text-[#24213A] focus:bg-white focus:outline-none focus:border-[#713BDB]"
+                    className="w-full px-3.5 py-2.5 text-sm bg-[#F8F6FF] dark:bg-[#26223D] border border-[#713BDB]/20 dark:border-white/15 rounded-xl text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none focus:border-[#713BDB]"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="contact-email" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+                <label
+                  htmlFor="contact-email"
+                  className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+                >
                   Email Address
                 </label>
                 <input
@@ -202,12 +217,15 @@ export function ContactPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full px-3.5 py-2.5 text-sm bg-[#F8F6FF] border border-[#713BDB]/20 rounded-xl text-[#24213A] focus:bg-white focus:outline-none focus:border-[#713BDB]"
+                  className="w-full px-3.5 py-2.5 text-sm bg-[#F8F6FF] dark:bg-[#26223D] border border-[#713BDB]/20 dark:border-white/15 rounded-xl text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none focus:border-[#713BDB]"
                 />
               </div>
 
               <div>
-                <label htmlFor="contact-message" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+                <label
+                  htmlFor="contact-message"
+                  className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+                >
                   Message <span className="text-[#FF626E]">*</span>
                 </label>
                 <textarea
@@ -217,7 +235,7 @@ export function ContactPage() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="How can we help you?"
-                  className="w-full px-3.5 py-2.5 text-sm bg-[#F8F6FF] border border-[#713BDB]/20 rounded-xl text-[#24213A] focus:bg-white focus:outline-none focus:border-[#713BDB]"
+                  className="w-full px-3.5 py-2.5 text-sm bg-[#F8F6FF] dark:bg-[#26223D] border border-[#713BDB]/20 dark:border-white/15 rounded-xl text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none focus:border-[#713BDB]"
                 />
               </div>
 

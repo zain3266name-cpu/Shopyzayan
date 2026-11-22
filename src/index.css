@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -12,6 +13,11 @@
     scroll-behavior: smooth;
     color: #24213A;
     background-color: #F8F6FF;
+  }
+
+  html.dark {
+    color: #F4F2FF;
+    background-color: #12101F;
   }
 
   h1, h2 {

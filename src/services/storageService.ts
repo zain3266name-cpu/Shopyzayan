@@ -1,9 +1,11 @@
-import { CartItem, OrderRecord } from '../types/store';
+import { CartItem, OrderRecord, ThemeMode } from '../types/store';
 
 const STORAGE_KEYS = {
   CART: 'shopzayn_cart_v1',
   WISHLIST: 'shopzayn_wishlist_v1',
   RECENTLY_VIEWED: 'shopzayn_recently_viewed_v1',
+  THEME: 'shopzayn_theme_v1',
+  PROMO_CODE: 'shopzayn_promo_v1',
   LAST_ORDER: 'shopzayn_last_order_v1',
   NEWSLETTER: 'shopzayn_newsletter_v1',
   CONTACT_INQUIRIES: 'shopzayn_inquiries_v1',
@@ -64,6 +66,43 @@ export const storageService = {
       window.localStorage.setItem(STORAGE_KEYS.RECENTLY_VIEWED, JSON.stringify(productIds));
     } catch {
       // Ignore storage quota issues
+    }
+  },
+
+  getTheme(): ThemeMode {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEYS.THEME);
+      return raw === 'dark' ? 'dark' : 'light';
+    } catch {
+      return 'light';
+    }
+  },
+
+  saveTheme(theme: ThemeMode): void {
+    try {
+      window.localStorage.setItem(STORAGE_KEYS.THEME, theme);
+    } catch {
+      // Ignore storage errors
+    }
+  },
+
+  getPromoCode(): string {
+    try {
+      return window.localStorage.getItem(STORAGE_KEYS.PROMO_CODE) || '';
+    } catch {
+      return '';
+    }
+  },
+
+  savePromoCode(code: string): void {
+    try {
+      if (!code) {
+        window.localStorage.removeItem(STORAGE_KEYS.PROMO_CODE);
+      } else {
+        window.localStorage.setItem(STORAGE_KEYS.PROMO_CODE, code);
+      }
+    } catch {
+      // Ignore storage errors
     }
   },
 

@@ -22,10 +22,10 @@ export function ToastContainer() {
 
           const accentRing =
             toast.variant === 'error'
-              ? 'text-[#FF626E] bg-[#FFF0F2] border-[#FF626E]/30'
+              ? 'text-[#FF626E] bg-[#FFF0F2] dark:bg-[#FF626E]/15 border-[#FF626E]/30'
               : toast.variant === 'info'
-              ? 'text-[#713BDB] bg-[#F8F6FF] border-[#713BDB]/20'
-              : 'text-[#166534] bg-emerald-50 border-emerald-200';
+              ? 'text-[#713BDB] dark:text-[#A78BFA] bg-[#F8F6FF] dark:bg-[#26223D] border-[#713BDB]/20 dark:border-white/10'
+              : 'text-[#166534] dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800';
 
           return (
             <motion.div
@@ -34,7 +34,7 @@ export function ToastContainer() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className="pointer-events-auto flex items-start gap-3 bg-white border border-[#713BDB]/15 shadow-lg rounded-xl px-4 py-3 min-w-[280px]"
+              className="pointer-events-auto flex items-start gap-3 bg-white dark:bg-[#1C192E] border border-[#713BDB]/15 dark:border-white/10 shadow-lg rounded-xl px-4 py-3 min-w-[280px]"
             >
               <span
                 className={`mt-0.5 flex items-center justify-center w-6 h-6 rounded-lg border shrink-0 ${accentRing}`}
@@ -42,16 +42,20 @@ export function ToastContainer() {
                 <Icon className="w-3.5 h-3.5" />
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[#24213A] leading-snug">{toast.title}</p>
+                <p className="text-sm font-semibold text-[#24213A] dark:text-[#F4F2FF] leading-snug">
+                  {toast.title}
+                </p>
                 {toast.description && (
-                  <p className="text-xs text-[#5C577A] mt-0.5 line-clamp-2">{toast.description}</p>
+                  <p className="text-xs text-[#5C577A] dark:text-[#B8B3D1] mt-0.5 line-clamp-2">
+                    {toast.description}
+                  </p>
                 )}
               </div>
               <button
                 type="button"
                 onClick={() => dismissToast(toast.id)}
                 aria-label="Dismiss notification"
-                className="text-[#8E89A8] hover:text-[#24213A] p-1 rounded-lg transition-colors shrink-0"
+                className="text-[#8E89A8] hover:text-[#24213A] dark:hover:text-white p-1 rounded-lg transition-colors shrink-0"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

@@ -1,4 +1,4 @@
-import { Heart, ShoppingBag } from 'lucide-react';
+import { Eye, Heart, ShoppingBag } from 'lucide-react';
 import { formatPkr, getDiscountPercent, getPrimaryProductBadge } from '../config/storeConfig';
 import { useStore } from '../context/StoreContext';
 import { Product } from '../types/store';
@@ -9,7 +9,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { navigate, addToCart, toggleWishlist, isInWishlist } = useStore();
+  const { navigate, addToCart, toggleWishlist, isInWishlist, setQuickViewProduct } = useStore();
   const displayTag = getPrimaryProductBadge(product);
   const discountPercent = getDiscountPercent(product.pricePkr, product.originalPricePkr);
   const wishlisted = isInWishlist(product.id);
@@ -22,8 +22,8 @@ export function ProductCard({ product }: ProductCardProps) {
       : 'bg-[#FFC83D] text-[#24213A]';
 
   return (
-    <article className="group h-full flex flex-col bg-white rounded-2xl border border-[#713BDB]/10 shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F1EEFC]">
+    <article className="group h-full flex flex-col bg-white dark:bg-[#1C192E] rounded-2xl border border-[#713BDB]/10 dark:border-white/10 shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F1EEFC] dark:bg-[#26223D]">
         <button
           type="button"
           onClick={() => navigate('product', { slug: product.slug })}
@@ -46,37 +46,57 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         )}
 
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleWishlist(product);
-          }}
-          aria-label={
-            wishlisted
-              ? `Remove ${product.name} from wishlist`
-              : `Add ${product.name} to wishlist`
-          }
-          aria-pressed={wishlisted}
-          className={`absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 backdrop-blur-xs shadow-xs border border-black/5 flex items-center justify-center transition-colors ${
-            wishlisted ? 'text-[#FF626E]' : 'text-[#5C577A] hover:text-[#713BDB]'
-          }`}
-        >
-          <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
-        </button>
+        <div className="absolute top-2.5 right-2.5 flex flex-col gap-1.5">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleWishlist(product);
+            }}
+            aria-label={
+              wishlisted
+                ? `Remove ${product.name} from wishlist`
+                : `Add ${product.name} to wishlist`
+            }
+            aria-pressed={wishlisted}
+            className={`w-8 h-8 rounded-full bg-white/95 dark:bg-[#1C192E]/95 backdrop-blur-xs shadow-xs border border-black/5 dark:border-white/15 flex items-center justify-center transition-colors ${
+              wishlisted
+                ? 'text-[#FF626E]'
+                : 'text-[#5C577A] dark:text-[#B8B3D1] hover:text-[#713BDB] dark:hover:text-white'
+            }`}
+          >
+            <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setQuickViewProduct(product);
+            }}
+            aria-label={`Quick view ${product.name}`}
+            title="Quick view"
+            className="w-8 h-8 rounded-full bg-white/95 dark:bg-[#1C192E]/95 backdrop-blur-xs shadow-xs border border-black/5 dark:border-white/15 flex items-center justify-center text-[#5C577A] dark:text-[#B8B3D1] hover:text-[#713BDB] dark:hover:text-white transition-all md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       <div className="p-3.5 sm:p-4 flex flex-col flex-1 gap-2">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.07em] text-[#6B6589] font-semibold truncate">
+          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.07em] text-[#6B6589] dark:text-[#B8B3D1] font-semibold truncate">
             {product.category}
           </span>
           {product.colors.length > 1 && (
-            <div className="hidden sm:flex items-center gap-1 shrink-0" aria-label={`${product.colors.length} color options`}>
+            <div
+              className="hidden sm:flex items-center gap-1 shrink-0"
+              aria-label={`${product.colors.length} color options`}
+            >
               {product.colors.slice(0, 3).map((c) => (
                 <span
                   key={c.name}
-                  className="w-2.5 h-2.5 rounded-full border border-black/15"
+                  className="w-2.5 h-2.5 rounded-full border border-black/15 dark:border-white/25"
                   style={{ backgroundColor: c.hex }}
                   title={c.name}
                 />
@@ -88,13 +108,13 @@ export function ProductCard({ product }: ProductCardProps) {
         <button
           type="button"
           onClick={() => navigate('product', { slug: product.slug })}
-          className="text-left text-[13px] sm:text-[15px] font-semibold text-[#24213A] hover:text-[#713BDB] transition-colors line-clamp-2 leading-snug focus-visible:outline-2 focus-visible:outline-[#713BDB] rounded-xs"
+          className="text-left text-[13px] sm:text-[15px] font-semibold text-[#24213A] dark:text-[#F4F2FF] hover:text-[#713BDB] dark:hover:text-[#A78BFA] transition-colors line-clamp-2 leading-snug focus-visible:outline-2 focus-visible:outline-[#713BDB] rounded-xs"
         >
           {product.name}
         </button>
 
         <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-2 tabular-nums">
-          <span className="text-sm sm:text-base font-bold text-[#24213A]">
+          <span className="text-sm sm:text-base font-bold text-[#24213A] dark:text-[#F4F2FF]">
             {formatPkr(product.pricePkr)}
           </span>
           {product.originalPricePkr && product.originalPricePkr > product.pricePkr && (

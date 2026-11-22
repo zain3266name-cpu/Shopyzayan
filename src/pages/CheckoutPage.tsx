@@ -7,7 +7,9 @@ import {
   ExternalLink,
   MessageCircle,
   ShoppingBag,
+  Tag,
   Truck,
+  X,
 } from 'lucide-react';
 import { useState } from 'react';
 import { ProductImage } from '../components/ProductImage';
@@ -26,7 +28,18 @@ interface FormErrors {
 }
 
 export function CheckoutPage() {
-  const { cart, cartTotals, clearCart, navigate, showToast, lastOrder, setLastOrder } = useStore();
+  const {
+    cart,
+    cartTotals,
+    promoCode,
+    applyPromoCode,
+    removePromoCode,
+    clearCart,
+    navigate,
+    showToast,
+    lastOrder,
+    setLastOrder,
+  } = useStore();
 
   const [form, setForm] = useState<CheckoutFormData>({
     fullName: '',
@@ -38,6 +51,7 @@ export function CheckoutPage() {
     paymentMethod: 'COD',
   });
   const [customCity, setCustomCity] = useState('');
+  const [promoInput, setPromoInput] = useState(promoCode);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submittedOrder, setSubmittedOrder] = useState<OrderRecord | null>(null);
   const [copiedMessage, setCopiedMessage] = useState(false);
@@ -70,6 +84,14 @@ export function CheckoutPage() {
     return Object.keys(nextErrors).length === 0;
   };
 
+  const handleApplyPromo = () => {
+    if (!promoInput.trim()) return;
+    const ok = applyPromoCode(promoInput);
+    if (ok) {
+      setPromoInput(promoInput.trim().toUpperCase());
+    }
+  };
+
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0) {
@@ -85,12 +107,14 @@ export function CheckoutPage() {
     const resolvedCity = form.city === 'Other' ? customCity.trim() : form.city;
     const prepared = orderService.prepareWhatsAppOrder(
       { ...form, city: resolvedCity },
-      cart
+      cart,
+      promoCode
     );
 
     setSubmittedOrder(prepared);
     setLastOrder(prepared);
     clearCart();
+    setPromoInput('');
     showToast('Order prepared for WhatsApp', `Reference ${prepared.orderNumber} is ready to send.`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -110,22 +134,22 @@ export function CheckoutPage() {
   if (activeReceipt) {
     return (
       <div className="max-w-[820px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="rounded-2xl border border-[#713BDB]/15 bg-white shadow-sm p-6 sm:p-10 space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#713BDB]/10">
+        <div className="rounded-2xl border border-[#713BDB]/15 dark:border-white/10 bg-white dark:bg-[#1C192E] shadow-sm p-6 sm:p-10 space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#713BDB]/10 dark:border-white/10">
             <div className="flex items-start gap-3.5">
-              <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-center text-emerald-700 dark:text-emerald-300 shrink-0">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.1em] text-[#713BDB] font-bold">
+                <p className="text-xs uppercase tracking-[0.1em] text-[#713BDB] dark:text-[#A78BFA] font-bold">
                   Cash on Delivery Order Prepared
                 </p>
-                <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] mt-0.5">
+                <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-0.5">
                   Order {activeReceipt.orderNumber}
                 </h1>
               </div>
             </div>
-            <span className="text-xs font-mono tabular-nums text-[#5C577A]">
+            <span className="text-xs font-mono tabular-nums text-[#5C577A] dark:text-[#B8B3D1]">
               {new Date(activeReceipt.createdAtIso).toLocaleDateString('en-PK', {
                 day: 'numeric',
                 month: 'short',
@@ -135,14 +159,14 @@ export function CheckoutPage() {
           </div>
 
           {/* Primary WhatsApp Dispatch Card */}
-          <div className="rounded-2xl bg-[#F4FBF7] border border-emerald-200 p-5 sm:p-6 space-y-4">
+          <div className="rounded-2xl bg-[#F4FBF7] dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/30 p-5 sm:p-6 space-y-4">
             <div className="space-y-1.5">
-              <h2 className="font-display text-lg font-bold text-[#24213A]">
+              <h2 className="font-display text-lg font-bold text-[#24213A] dark:text-[#F4F2FF]">
                 Send Your Order Details to Our WhatsApp
               </h2>
-              <p className="text-sm text-[#5C577A] leading-relaxed">
+              <p className="text-sm text-[#5C577A] dark:text-[#B8B3D1] leading-relaxed">
                 Click the button below to open WhatsApp with your complete order summary pre-filled
-                for dispatch to <span className="font-bold text-[#24213A]">{STORE_CONFIG.brandName}</span> (
+                for dispatch to <span className="font-bold text-[#24213A] dark:text-[#F4F2FF]">{STORE_CONFIG.brandName}</span> (
                 <span className="font-mono text-xs">{STORE_CONFIG.whatsappDisplay}</span>). Your
                 order is confirmed once sent on WhatsApp.
               </p>
@@ -163,11 +187,11 @@ export function CheckoutPage() {
               <button
                 type="button"
                 onClick={() => handleCopyMessage(activeReceipt.whatsappMessage)}
-                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white border border-[#713BDB]/20 text-[#24213A] text-sm font-semibold rounded-xl hover:border-[#713BDB] transition-colors whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white dark:bg-[#26223D] border border-[#713BDB]/20 dark:border-white/15 text-[#24213A] dark:text-[#F4F2FF] text-sm font-semibold rounded-xl hover:border-[#713BDB] transition-colors whitespace-nowrap"
               >
                 {copiedMessage ? (
                   <>
-                    <Check className="w-4 h-4 text-emerald-700" />
+                    <Check className="w-4 h-4 text-emerald-700 dark:text-emerald-300" />
                     <span>Copied</span>
                   </>
                 ) : (
@@ -183,53 +207,65 @@ export function CheckoutPage() {
           {/* Customer & Item Summary */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
             <div className="space-y-1.5">
-              <p className="text-xs uppercase tracking-[0.08em] font-bold text-[#713BDB]">
+              <p className="text-xs uppercase tracking-[0.08em] font-bold text-[#713BDB] dark:text-[#A78BFA]">
                 Delivery Destination
               </p>
-              <p className="font-bold text-[#24213A]">{activeReceipt.customer.fullName}</p>
-              <p className="text-[#5C577A] font-mono text-xs">{activeReceipt.customer.phone}</p>
+              <p className="font-bold text-[#24213A] dark:text-[#F4F2FF]">
+                {activeReceipt.customer.fullName}
+              </p>
+              <p className="text-[#5C577A] dark:text-[#B8B3D1] font-mono text-xs">
+                {activeReceipt.customer.phone}
+              </p>
               {activeReceipt.customer.email && (
-                <p className="text-[#5C577A]">{activeReceipt.customer.email}</p>
+                <p className="text-[#5C577A] dark:text-[#B8B3D1]">{activeReceipt.customer.email}</p>
               )}
-              <p className="text-[#5C577A]">{activeReceipt.customer.address}</p>
-              <p className="text-[#5C577A]">{activeReceipt.customer.city}, Pakistan</p>
+              <p className="text-[#5C577A] dark:text-[#B8B3D1]">{activeReceipt.customer.address}</p>
+              <p className="text-[#5C577A] dark:text-[#B8B3D1]">
+                {activeReceipt.customer.city}, Pakistan
+              </p>
             </div>
 
             <div className="space-y-1.5">
-              <p className="text-xs uppercase tracking-[0.08em] font-bold text-[#713BDB]">
+              <p className="text-xs uppercase tracking-[0.08em] font-bold text-[#713BDB] dark:text-[#A78BFA]">
                 Payment & Totals
               </p>
-              <p className="text-[#24213A]">Method: Cash on Delivery (COD)</p>
-              <p className="text-[#5C577A] tabular-nums">
+              <p className="text-[#24213A] dark:text-[#F4F2FF]">Method: Cash on Delivery (COD)</p>
+              <p className="text-[#5C577A] dark:text-[#B8B3D1] tabular-nums">
                 Subtotal: {formatPkr(activeReceipt.subtotalPkr)}
               </p>
-              <p className="text-[#5C577A] tabular-nums">
+              {Boolean(activeReceipt.discountPkr && activeReceipt.discountPkr > 0) && (
+                <p className="text-emerald-700 dark:text-emerald-300 tabular-nums font-semibold">
+                  Promo{activeReceipt.promoCode ? ` (${activeReceipt.promoCode})` : ''}: -
+                  {formatPkr(activeReceipt.discountPkr ?? 0)}
+                </p>
+              )}
+              <p className="text-[#5C577A] dark:text-[#B8B3D1] tabular-nums">
                 Delivery:{' '}
                 {activeReceipt.shippingPkr === 0 ? 'Free' : formatPkr(activeReceipt.shippingPkr)}
               </p>
-              <p className="font-bold text-[#713BDB] text-base pt-1 tabular-nums">
+              <p className="font-bold text-[#713BDB] dark:text-[#A78BFA] text-base pt-1 tabular-nums">
                 Total Payable: {formatPkr(activeReceipt.totalPkr)}
               </p>
             </div>
           </div>
 
           {/* Itemized list */}
-          <div className="border-t border-[#713BDB]/10 pt-5 space-y-3">
-            <p className="text-xs uppercase tracking-[0.08em] font-bold text-[#6B6589]">
+          <div className="border-t border-[#713BDB]/10 dark:border-white/10 pt-5 space-y-3">
+            <p className="text-xs uppercase tracking-[0.08em] font-bold text-[#6B6589] dark:text-[#B8B3D1]">
               Items ({activeReceipt.items.reduce((s, i) => s + i.quantity, 0)})
             </p>
-            <ul className="divide-y divide-[#713BDB]/10">
+            <ul className="divide-y divide-[#713BDB]/10 dark:divide-white/10">
               {activeReceipt.items.map((item) => (
                 <li key={item.key} className="py-2.5 flex items-center justify-between gap-4 text-sm">
                   <div className="min-w-0">
-                    <p className="font-semibold text-[#24213A] truncate">
+                    <p className="font-semibold text-[#24213A] dark:text-[#F4F2FF] truncate">
                       {item.name} × {item.quantity}
                     </p>
-                    <p className="text-xs text-[#5C577A]">
+                    <p className="text-xs text-[#5C577A] dark:text-[#B8B3D1]">
                       {[item.selectedColor, item.selectedSize].filter(Boolean).join(' · ')}
                     </p>
                   </div>
-                  <span className="font-bold text-[#24213A] tabular-nums shrink-0">
+                  <span className="font-bold text-[#24213A] dark:text-[#F4F2FF] tabular-nums shrink-0">
                     {formatPkr(item.pricePkr * item.quantity)}
                   </span>
                 </li>
@@ -237,11 +273,11 @@ export function CheckoutPage() {
             </ul>
           </div>
 
-          <details className="border-t border-[#713BDB]/10 pt-4">
-            <summary className="text-xs font-semibold text-[#5C577A] hover:text-[#713BDB] cursor-pointer select-none">
+          <details className="border-t border-[#713BDB]/10 dark:border-white/10 pt-4">
+            <summary className="text-xs font-semibold text-[#5C577A] dark:text-[#B8B3D1] hover:text-[#713BDB] dark:hover:text-[#A78BFA] cursor-pointer select-none">
               Preview formatted WhatsApp message
             </summary>
-            <pre className="mt-3 p-4 rounded-xl bg-[#F8F6FF] text-xs font-mono text-[#24213A] whitespace-pre-wrap overflow-x-auto border border-[#713BDB]/15">
+            <pre className="mt-3 p-4 rounded-xl bg-[#F8F6FF] dark:bg-[#26223D] text-xs font-mono text-[#24213A] dark:text-[#F4F2FF] whitespace-pre-wrap overflow-x-auto border border-[#713BDB]/15 dark:border-white/10">
               {activeReceipt.whatsappMessage}
             </pre>
           </details>
@@ -253,7 +289,7 @@ export function CheckoutPage() {
                 setSubmittedOrder(null);
                 navigate('shop');
               }}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#713BDB] hover:underline underline-offset-4"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#713BDB] dark:text-[#A78BFA] hover:underline underline-offset-4"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Continue Shopping</span>
@@ -267,11 +303,13 @@ export function CheckoutPage() {
   if (cart.length === 0) {
     return (
       <div className="max-w-[760px] mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-white border border-[#713BDB]/15 shadow-xs flex items-center justify-center text-[#713BDB] mx-auto mb-5">
+        <div className="w-16 h-16 rounded-2xl bg-white dark:bg-[#1C192E] border border-[#713BDB]/15 dark:border-white/10 shadow-xs flex items-center justify-center text-[#713BDB] dark:text-[#A78BFA] mx-auto mb-5">
           <ShoppingBag className="w-7 h-7 stroke-[1.75]" />
         </div>
-        <h1 className="font-display text-3xl font-bold text-[#24213A]">Your cart is empty</h1>
-        <p className="text-sm text-[#5C577A] mt-2">
+        <h1 className="font-display text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF]">
+          Your cart is empty
+        </h1>
+        <p className="text-sm text-[#5C577A] dark:text-[#B8B3D1] mt-2">
           Add items to your shopping cart before proceeding to checkout.
         </p>
 
@@ -288,7 +326,7 @@ export function CheckoutPage() {
             <button
               type="button"
               onClick={() => setSubmittedOrder(lastOrder)}
-              className="inline-flex items-center gap-2 px-5 py-3 bg-white border border-[#713BDB]/20 text-[#24213A] text-sm font-semibold rounded-xl hover:border-[#713BDB] transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-3 bg-white dark:bg-[#1C192E] border border-[#713BDB]/20 dark:border-white/15 text-[#24213A] dark:text-[#F4F2FF] text-sm font-semibold rounded-xl hover:border-[#713BDB] transition-colors"
             >
               <span>View Last Prepared Order ({lastOrder.orderNumber})</span>
             </button>
@@ -300,19 +338,19 @@ export function CheckoutPage() {
 
   return (
     <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-      <div className="pb-6 border-b border-[#713BDB]/15 flex items-end justify-between gap-4">
+      <div className="pb-6 border-b border-[#713BDB]/15 dark:border-white/10 flex items-end justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] font-bold">
+          <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] dark:text-[#A78BFA] font-bold">
             Cash on Delivery
           </p>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#24213A] mt-1">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-1">
             Checkout
           </h1>
         </div>
         <button
           type="button"
           onClick={() => navigate('cart')}
-          className="text-xs font-semibold text-[#713BDB] hover:underline underline-offset-4"
+          className="text-xs font-semibold text-[#713BDB] dark:text-[#A78BFA] hover:underline underline-offset-4"
         >
           Edit Cart
         </button>
@@ -322,16 +360,19 @@ export function CheckoutPage() {
         <form
           onSubmit={handlePlaceOrder}
           noValidate
-          className="lg:col-span-7 bg-white rounded-2xl border border-[#713BDB]/10 p-6 sm:p-8 shadow-xs space-y-6"
+          className="lg:col-span-7 bg-white dark:bg-[#1C192E] rounded-2xl border border-[#713BDB]/10 dark:border-white/10 p-6 sm:p-8 shadow-xs space-y-6"
         >
           <div className="space-y-4">
-            <h2 className="font-display text-lg font-bold text-[#24213A]">
+            <h2 className="font-display text-lg font-bold text-[#24213A] dark:text-[#F4F2FF]">
               Customer & Delivery Details
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="fullName" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+                <label
+                  htmlFor="fullName"
+                  className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+                >
                   Full Name <span className="text-[#FF626E]">*</span>
                 </label>
                 <input
@@ -344,10 +385,10 @@ export function CheckoutPage() {
                     if (errors.fullName) setErrors({ ...errors, fullName: undefined });
                   }}
                   placeholder="Zain Raza"
-                  className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] text-[#24213A] focus:bg-white focus:outline-none ${
+                  className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] dark:bg-[#26223D] text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none ${
                     errors.fullName
                       ? 'border-[#FF626E]'
-                      : 'border-[#713BDB]/20 focus:border-[#713BDB]'
+                      : 'border-[#713BDB]/20 dark:border-white/15 focus:border-[#713BDB]'
                   }`}
                 />
                 {errors.fullName && (
@@ -356,7 +397,10 @@ export function CheckoutPage() {
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+                <label
+                  htmlFor="phone"
+                  className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+                >
                   Mobile Number (WhatsApp) <span className="text-[#FF626E]">*</span>
                 </label>
                 <input
@@ -369,10 +413,10 @@ export function CheckoutPage() {
                     if (errors.phone) setErrors({ ...errors, phone: undefined });
                   }}
                   placeholder="0300-1234567"
-                  className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] text-[#24213A] focus:bg-white focus:outline-none ${
+                  className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] dark:bg-[#26223D] text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none ${
                     errors.phone
                       ? 'border-[#FF626E]'
-                      : 'border-[#713BDB]/20 focus:border-[#713BDB]'
+                      : 'border-[#713BDB]/20 dark:border-white/15 focus:border-[#713BDB]'
                   }`}
                 />
                 {errors.phone && <p className="mt-1 text-xs text-[#FF626E]">{errors.phone}</p>}
@@ -381,7 +425,10 @@ export function CheckoutPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="email" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+                <label
+                  htmlFor="email"
+                  className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+                >
                   Email <span className="text-[#8E89A8]">(Optional)</span>
                 </label>
                 <input
@@ -394,17 +441,20 @@ export function CheckoutPage() {
                     if (errors.email) setErrors({ ...errors, email: undefined });
                   }}
                   placeholder="you@example.com"
-                  className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] text-[#24213A] focus:bg-white focus:outline-none ${
+                  className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] dark:bg-[#26223D] text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none ${
                     errors.email
                       ? 'border-[#FF626E]'
-                      : 'border-[#713BDB]/20 focus:border-[#713BDB]'
+                      : 'border-[#713BDB]/20 dark:border-white/15 focus:border-[#713BDB]'
                   }`}
                 />
                 {errors.email && <p className="mt-1 text-xs text-[#FF626E]">{errors.email}</p>}
               </div>
 
               <div>
-                <label htmlFor="city" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+                <label
+                  htmlFor="city"
+                  className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+                >
                   City <span className="text-[#FF626E]">*</span>
                 </label>
                 <select
@@ -414,7 +464,7 @@ export function CheckoutPage() {
                     setForm({ ...form, city: e.target.value });
                     if (errors.customCity) setErrors({ ...errors, customCity: undefined });
                   }}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#713BDB]/20 bg-[#F8F6FF] text-[#24213A] focus:bg-white focus:outline-none focus:border-[#713BDB]"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#713BDB]/20 dark:border-white/15 bg-[#F8F6FF] dark:bg-[#26223D] text-[#24213A] dark:text-[#F4F2FF] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none focus:border-[#713BDB]"
                 >
                   {STORE_CONFIG.pakistaniCities.map((cityName) => (
                     <option key={cityName} value={cityName}>
@@ -429,7 +479,7 @@ export function CheckoutPage() {
               <div>
                 <label
                   htmlFor="customCity"
-                  className="block text-xs font-semibold text-[#24213A] mb-1.5"
+                  className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
                 >
                   Specify City <span className="text-[#FF626E]">*</span>
                 </label>
@@ -442,10 +492,10 @@ export function CheckoutPage() {
                     if (errors.customCity) setErrors({ ...errors, customCity: undefined });
                   }}
                   placeholder="Enter your city name"
-                  className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] text-[#24213A] focus:bg-white focus:outline-none ${
+                  className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] dark:bg-[#26223D] text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none ${
                     errors.customCity
                       ? 'border-[#FF626E]'
-                      : 'border-[#713BDB]/20 focus:border-[#713BDB]'
+                      : 'border-[#713BDB]/20 dark:border-white/15 focus:border-[#713BDB]'
                   }`}
                 />
                 {errors.customCity && (
@@ -455,7 +505,10 @@ export function CheckoutPage() {
             )}
 
             <div>
-              <label htmlFor="address" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+              <label
+                htmlFor="address"
+                className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+              >
                 Complete Street Address <span className="text-[#FF626E]">*</span>
               </label>
               <textarea
@@ -468,17 +521,20 @@ export function CheckoutPage() {
                   if (errors.address) setErrors({ ...errors, address: undefined });
                 }}
                 placeholder="House / Flat No., Street, Sector / Phase / Block, Landmark"
-                className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] text-[#24213A] focus:bg-white focus:outline-none ${
+                className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-[#F8F6FF] dark:bg-[#26223D] text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none ${
                   errors.address
                     ? 'border-[#FF626E]'
-                    : 'border-[#713BDB]/20 focus:border-[#713BDB]'
+                    : 'border-[#713BDB]/20 dark:border-white/15 focus:border-[#713BDB]'
                 }`}
               />
               {errors.address && <p className="mt-1 text-xs text-[#FF626E]">{errors.address}</p>}
             </div>
 
             <div>
-              <label htmlFor="notes" className="block text-xs font-semibold text-[#24213A] mb-1.5">
+              <label
+                htmlFor="notes"
+                className="block text-xs font-semibold text-[#24213A] dark:text-[#F4F2FF] mb-1.5"
+              >
                 Delivery Instructions <span className="text-[#8E89A8]">(Optional)</span>
               </label>
               <input
@@ -487,24 +543,31 @@ export function CheckoutPage() {
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
                 placeholder="Preferred delivery window or gift note"
-                className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#713BDB]/20 bg-[#F8F6FF] text-[#24213A] focus:bg-white focus:outline-none focus:border-[#713BDB]"
+                className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#713BDB]/20 dark:border-white/15 bg-[#F8F6FF] dark:bg-[#26223D] text-[#24213A] dark:text-[#F4F2FF] placeholder:text-[#8E89A8] focus:bg-white dark:focus:bg-[#2D2847] focus:outline-none focus:border-[#713BDB]"
               />
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#713BDB]/10 space-y-3">
-            <h2 className="font-display text-base font-bold text-[#24213A]">Payment Method</h2>
-            <div className="p-4 rounded-xl border border-[#713BDB] bg-[#F8F6FF] flex items-start gap-3">
-              <Truck className="w-5 h-5 text-[#713BDB] mt-0.5 shrink-0" />
+          <div className="pt-4 border-t border-[#713BDB]/10 dark:border-white/10 space-y-3">
+            <h2 className="font-display text-base font-bold text-[#24213A] dark:text-[#F4F2FF]">
+              Payment Method
+            </h2>
+            <div className="p-4 rounded-xl border border-[#713BDB] bg-[#F8F6FF] dark:bg-[#26223D] flex items-start gap-3">
+              <Truck className="w-5 h-5 text-[#713BDB] dark:text-[#A78BFA] mt-0.5 shrink-0" />
               <div className="flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-bold text-[#24213A]">Cash on Delivery (COD)</p>
-                  <span className="text-xs font-bold text-[#713BDB]">Selected</span>
+                  <p className="text-sm font-bold text-[#24213A] dark:text-[#F4F2FF]">
+                    Cash on Delivery (COD)
+                  </p>
+                  <span className="text-xs font-bold text-[#713BDB] dark:text-[#A78BFA]">
+                    Selected
+                  </span>
                 </div>
-                <p className="text-xs text-[#5C577A] mt-1">
+                <p className="text-xs text-[#5C577A] dark:text-[#B8B3D1] mt-1">
                   Pay in cash when your parcel arrives at your doorstep. After clicking Place
-                  Order, you will send your order details directly to our WhatsApp account for
-                  immediate dispatch confirmation.
+                  Order, you will send your order details directly to our WhatsApp account (
+                  <span className="font-mono">{STORE_CONFIG.whatsappDisplay}</span>) for immediate
+                  dispatch confirmation.
                 </p>
               </div>
             </div>
@@ -519,18 +582,20 @@ export function CheckoutPage() {
           </button>
         </form>
 
-        <aside className="lg:col-span-5 rounded-2xl border border-[#713BDB]/15 bg-white p-6 shadow-xs space-y-5 lg:sticky lg:top-24">
+        <aside className="lg:col-span-5 rounded-2xl border border-[#713BDB]/15 dark:border-white/10 bg-white dark:bg-[#1C192E] p-6 shadow-xs space-y-5 lg:sticky lg:top-24">
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-lg font-bold text-[#24213A]">Order Summary</h2>
-            <span className="text-xs text-[#5C577A] tabular-nums">
+            <h2 className="font-display text-lg font-bold text-[#24213A] dark:text-[#F4F2FF]">
+              Order Summary
+            </h2>
+            <span className="text-xs text-[#5C577A] dark:text-[#B8B3D1] tabular-nums">
               {cartTotals.itemCount} {cartTotals.itemCount === 1 ? 'item' : 'items'}
             </span>
           </div>
 
-          <ul className="divide-y divide-[#713BDB]/10 max-h-[340px] overflow-y-auto pr-1">
+          <ul className="divide-y divide-[#713BDB]/10 dark:divide-white/10 max-h-[340px] overflow-y-auto pr-1">
             {cart.map((item) => (
               <li key={item.key} className="py-3.5 first:pt-0 flex items-center gap-3.5">
-                <div className="w-16 h-12 rounded-xl overflow-hidden bg-[#F1EEFC] border border-[#713BDB]/10 shrink-0">
+                <div className="w-16 h-12 rounded-xl overflow-hidden bg-[#F1EEFC] dark:bg-[#26223D] border border-[#713BDB]/10 dark:border-white/10 shrink-0">
                   <ProductImage
                     src={item.image}
                     alt={item.name}
@@ -539,36 +604,104 @@ export function CheckoutPage() {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#24213A] truncate">{item.name}</p>
-                  <p className="text-xs text-[#5C577A]">
+                  <p className="text-sm font-semibold text-[#24213A] dark:text-[#F4F2FF] truncate">
+                    {item.name}
+                  </p>
+                  <p className="text-xs text-[#5C577A] dark:text-[#B8B3D1]">
                     Qty {item.quantity}
                     {item.selectedColor ? ` · ${item.selectedColor}` : ''}
                     {item.selectedSize ? ` · ${item.selectedSize}` : ''}
                   </p>
                 </div>
-                <span className="text-sm font-bold text-[#24213A] tabular-nums shrink-0">
+                <span className="text-sm font-bold text-[#24213A] dark:text-[#F4F2FF] tabular-nums shrink-0">
                   {formatPkr(item.pricePkr * item.quantity)}
                 </span>
               </li>
             ))}
           </ul>
 
-          <div className="space-y-2.5 text-sm border-t border-[#713BDB]/10 pt-4">
-            <div className="flex items-center justify-between text-[#5C577A]">
+          {/* Promo Code */}
+          <div className="pt-3 border-t border-[#713BDB]/10 dark:border-white/10 space-y-2">
+            <label
+              htmlFor="checkout-promo"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#5C577A] dark:text-[#B8B3D1]"
+            >
+              <Tag className="w-3.5 h-3.5 text-[#713BDB] dark:text-[#A78BFA]" />
+              <span>Promo Code</span>
+            </label>
+            {cartTotals.appliedPromoCode ? (
+              <div className="flex items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-[#F4FBF7] dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/30">
+                <div className="text-xs">
+                  <span className="font-mono font-bold text-emerald-700 dark:text-emerald-300">
+                    {cartTotals.appliedPromoCode}
+                  </span>
+                  <span className="text-[#5C577A] dark:text-[#B8B3D1] ml-2">applied</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    removePromoCode();
+                    setPromoInput('');
+                  }}
+                  aria-label="Remove promo code"
+                  className="p-1 text-[#5C577A] dark:text-[#B8B3D1] hover:text-[#FF626E] transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  id="checkout-promo"
+                  type="text"
+                  value={promoInput}
+                  onChange={(e) => setPromoInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleApplyPromo();
+                    }
+                  }}
+                  placeholder="ZAYN10 or FREESHIP"
+                  className="flex-1 min-w-0 px-3 py-2 text-xs uppercase rounded-xl border border-[#713BDB]/20 dark:border-white/15 bg-[#F8F6FF] dark:bg-[#26223D] text-[#24213A] dark:text-[#F4F2FF] placeholder:normal-case placeholder:text-[#8E89A8] focus:outline-none focus:border-[#713BDB]"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyPromo}
+                  className="px-4 py-2 bg-[#24213A] dark:bg-[#713BDB] text-white text-xs font-semibold rounded-xl hover:bg-[#713BDB] dark:hover:bg-[#5E2EC4] transition-colors shrink-0"
+                >
+                  Apply
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-2.5 text-sm border-t border-[#713BDB]/10 dark:border-white/10 pt-4">
+            <div className="flex items-center justify-between text-[#5C577A] dark:text-[#B8B3D1]">
               <span>Subtotal</span>
-              <span className="font-semibold text-[#24213A] tabular-nums">
+              <span className="font-semibold text-[#24213A] dark:text-[#F4F2FF] tabular-nums">
                 {formatPkr(cartTotals.subtotalPkr)}
               </span>
             </div>
-            <div className="flex items-center justify-between text-[#5C577A]">
+            {cartTotals.discountPkr > 0 && cartTotals.appliedPromoCode && (
+              <div className="flex items-center justify-between text-emerald-700 dark:text-emerald-300">
+                <span>Promo ({cartTotals.appliedPromoCode})</span>
+                <span className="font-semibold tabular-nums">
+                  -{formatPkr(cartTotals.discountPkr)}
+                </span>
+              </div>
+            )}
+            <div className="flex items-center justify-between text-[#5C577A] dark:text-[#B8B3D1]">
               <span>Delivery Fee (COD)</span>
-              <span className="font-semibold text-[#24213A] tabular-nums">
+              <span className="font-semibold text-[#24213A] dark:text-[#F4F2FF] tabular-nums">
                 {cartTotals.shippingPkr === 0 ? 'Free' : formatPkr(cartTotals.shippingPkr)}
               </span>
             </div>
-            <div className="flex items-center justify-between pt-3 border-t border-[#713BDB]/10 text-base font-bold text-[#24213A]">
+            <div className="flex items-center justify-between pt-3 border-t border-[#713BDB]/10 dark:border-white/10 text-base font-bold text-[#24213A] dark:text-[#F4F2FF]">
               <span>Total Payable (PKR)</span>
-              <span className="tabular-nums text-[#713BDB]">{formatPkr(cartTotals.totalPkr)}</span>
+              <span className="tabular-nums text-[#713BDB] dark:text-[#A78BFA]">
+                {formatPkr(cartTotals.totalPkr)}
+              </span>
             </div>
           </div>
         </aside>

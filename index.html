@@ -15,8 +15,15 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      try {
+        if (localStorage.getItem('shopzayn_theme_v1') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    </script>
   </head>
-  <body class="bg-[#F8F6FF] text-[#24213A] antialiased selection:bg-[#713BDB] selection:text-white overflow-x-hidden">
+  <body class="bg-[#F8F6FF] dark:bg-[#12101F] text-[#24213A] dark:text-[#F4F2FF] antialiased selection:bg-[#713BDB] selection:text-white overflow-x-hidden transition-colors duration-200">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -21,12 +21,12 @@ export function ProductImage({
   if (hasError || !src) {
     return (
       <div
-        className={`flex flex-col items-center justify-center bg-[#F4F4F5] text-zinc-500 p-6 text-center ${className}`}
+        className={`flex flex-col items-center justify-center bg-[#F4F4F5] dark:bg-[#26223D] text-zinc-500 dark:text-[#B8B3D1] p-6 text-center ${className}`}
         role="img"
         aria-label={alt}
       >
-        <Package className="w-8 h-8 mb-2 stroke-[1.5] text-zinc-400" />
-        <span className="text-xs font-medium text-zinc-600 line-clamp-2 max-w-[180px]">
+        <Package className="w-8 h-8 mb-2 stroke-[1.5] text-zinc-400 dark:text-[#8E89A8]" />
+        <span className="text-xs font-medium text-zinc-600 dark:text-[#F4F2FF] line-clamp-2 max-w-[180px]">
           {title || alt}
         </span>
       </div>

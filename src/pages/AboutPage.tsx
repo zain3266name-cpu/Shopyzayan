@@ -8,7 +8,7 @@ const PILLARS = [
   {
     index: '01.',
     title: 'Material Honesty',
-    accent: 'text-[#713BDB]',
+    accent: 'text-[#713BDB] dark:text-[#A78BFA]',
     description:
       'Every piece begins with durable raw inputs: full-grain vegetable-tanned hides from Sialkot, combed long-staple cotton, 316L brushed steel, and fine IFRA-certified fragrance oils.',
   },
@@ -22,7 +22,7 @@ const PILLARS = [
   {
     index: '03.',
     title: 'Transparent Nationwide Service',
-    accent: 'text-[#0E7490]',
+    accent: 'text-[#0E7490] dark:text-[#28C5D7]',
     description:
       'All prices are listed cleanly in Pakistani Rupees with straightforward Cash on Delivery and responsive direct support on WhatsApp.',
   },
@@ -34,13 +34,13 @@ export function AboutPage() {
   return (
     <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-16">
       <section className="max-w-3xl">
-        <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] font-bold">
+        <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] dark:text-[#A78BFA] font-bold">
           About {STORE_CONFIG.brandName}
         </p>
-        <h1 className="font-display text-3xl sm:text-5xl font-bold text-[#24213A] mt-2 leading-[1.12]">
+        <h1 className="font-display text-3xl sm:text-5xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-2 leading-[1.12]">
           Crafted for Modern Everyday Living in Pakistan
         </h1>
-        <p className="mt-5 text-base text-[#5C577A] leading-relaxed">
+        <p className="mt-5 text-base text-[#5C577A] dark:text-[#B8B3D1] leading-relaxed">
           {STORE_CONFIG.brandName} was founded with a simple conviction: everyday essentials—your
           watch, leather wallet, overshirt, and signature scent—should carry the calm precision of
           international design houses without inflated luxury markups.
@@ -48,7 +48,7 @@ export function AboutPage() {
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
-        <div className="lg:col-span-7 relative min-h-[280px] sm:min-h-[380px] rounded-2xl overflow-hidden bg-white border border-[#713BDB]/10 shadow-xs">
+        <div className="lg:col-span-7 relative min-h-[280px] sm:min-h-[380px] rounded-2xl overflow-hidden bg-white dark:bg-[#1C192E] border border-[#713BDB]/10 dark:border-white/10 shadow-xs">
           <ProductImage
             src={HERO_MEDIA.atelierImage}
             alt="ShopZayn design studio and craft workshop"
@@ -58,16 +58,16 @@ export function AboutPage() {
         </div>
 
         <div className="lg:col-span-5 flex flex-col justify-center space-y-5">
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A]">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF]">
             Our Brand Story
           </h2>
-          <p className="text-sm sm:text-[15px] text-[#5C577A] leading-relaxed">
+          <p className="text-sm sm:text-[15px] text-[#5C577A] dark:text-[#B8B3D1] leading-relaxed">
             Operating between Lahore, Karachi, and Islamabad, we collaborate with specialist
             workshops that have produced leather goods and textiles for global labels for decades.
             By curating focused seasonal releases in small batches, we inspect every stitch, clasp,
             and bottle before it leaves our studio.
           </p>
-          <p className="text-sm sm:text-[15px] text-[#5C577A] leading-relaxed">
+          <p className="text-sm sm:text-[15px] text-[#5C577A] dark:text-[#B8B3D1] leading-relaxed">
             Whether you are ordering a chronograph for daily wear or gifting a hand-burnished folio,
             our Cash on Delivery experience and direct WhatsApp care ensure peace of mind from
             browsing to unboxing.
@@ -85,12 +85,12 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="pt-12 border-t border-[#713BDB]/15">
+      <section className="pt-12 border-t border-[#713BDB]/15 dark:border-white/10">
         <div className="max-w-xl mb-10">
-          <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] font-bold">
+          <p className="text-xs uppercase tracking-[0.12em] text-[#713BDB] dark:text-[#A78BFA] font-bold">
             Our Mission
           </p>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] mt-1">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#24213A] dark:text-[#F4F2FF] mt-1">
             Fewer Pieces, Better Made
           </h2>
         </div>
@@ -99,11 +99,15 @@ export function AboutPage() {
           {PILLARS.map((pillar) => (
             <div
               key={pillar.title}
-              className="p-6 rounded-2xl border border-[#713BDB]/10 bg-white shadow-xs space-y-3"
+              className="p-6 rounded-2xl border border-[#713BDB]/10 dark:border-white/10 bg-white dark:bg-[#1C192E] shadow-xs space-y-3"
             >
               <span className={`text-xs font-mono font-bold ${pillar.accent}`}>{pillar.index}</span>
-              <h3 className="font-display text-lg font-bold text-[#24213A]">{pillar.title}</h3>
-              <p className="text-sm text-[#5C577A] leading-relaxed">{pillar.description}</p>
+              <h3 className="font-display text-lg font-bold text-[#24213A] dark:text-[#F4F2FF]">
+                {pillar.title}
+              </h3>
+              <p className="text-sm text-[#5C577A] dark:text-[#B8B3D1] leading-relaxed">
+                {pillar.description}
+              </p>
             </div>
           ))}
         </div>

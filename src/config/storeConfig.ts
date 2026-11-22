@@ -8,8 +8,8 @@ export const STORE_CONFIG = {
   brandName: 'ShopZayn',
   currencyCode: 'PKR',
   currencySymbol: 'Rs.',
-  whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || '923001234567',
-  whatsappDisplay: '+92 300 1234567',
+  whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || '923706900516',
+  whatsappDisplay: '+92 370 6900516',
   whatsappSupportMessage:
     'Hello ShopZayn! I need help with a product or placing an order.',
   supportEmail: 'hello@shopzayn.pk',
@@ -19,6 +19,10 @@ export const STORE_CONFIG = {
   standardShippingFeePkr: 250,
   estimatedDeliveryWindow: '2–4 business days across Pakistan',
   maxRecentlyViewed: 6,
+  promoCodes: {
+    ZAYN10: { type: 'percent' as const, value: 10, label: '10% off subtotal' },
+    FREESHIP: { type: 'freeShipping' as const, value: 0, label: 'Free nationwide delivery' },
+  },
   pakistaniCities: [
     'Lahore',
     'Karachi',

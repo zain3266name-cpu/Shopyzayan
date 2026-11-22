@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { STORE_CONFIG } from '../config/storeConfig';
 import { catalogService } from '../services/catalogService';
-import { calculateCartTotals } from '../services/orderService';
+import { calculateCartTotals, resolvePromoCode } from '../services/orderService';
 import { storageService } from '../services/storageService';
 import {
   CartItem,
@@ -11,6 +11,7 @@ import {
   Product,
   ProductCategory,
   SortOption,
+  ThemeMode,
   ToastMessage,
 } from '../types/store';
 
@@ -22,9 +23,19 @@ interface ShopFiltersState {
 }
 
 interface StoreContextValue {
+  theme: ThemeMode;
+  toggleTheme: () => void;
   route: PageRoute;
   activeProductSlug: string | null;
-  navigate: (route: PageRoute, options?: { slug?: string; category?: ProductCategory; collection?: CollectionFilter; searchQuery?: string }) => void;
+  navigate: (
+    route: PageRoute,
+    options?: {
+      slug?: string;
+      category?: ProductCategory;
+      collection?: CollectionFilter;
+      searchQuery?: string;
+    }
+  ) => void;
   filters: ShopFiltersState;
   setCategory: (category: ProductCategory) => void;
   setCollection: (collection: CollectionFilter) => void;
@@ -32,9 +43,14 @@ interface StoreContextValue {
   setSortBy: (sort: SortOption) => void;
   resetFilters: () => void;
   cart: CartItem[];
+  promoCode: string;
+  applyPromoCode: (code: string) => boolean;
+  removePromoCode: () => void;
   cartTotals: {
     itemCount: number;
     subtotalPkr: number;
+    discountPkr: number;
+    appliedPromoCode: string | null;
     shippingPkr: number;
     totalPkr: number;
   };
@@ -42,6 +58,8 @@ interface StoreContextValue {
   setIsCartOpen: (open: boolean) => void;
   isSearchOpen: boolean;
   setIsSearchOpen: (open: boolean) => void;
+  quickViewProduct: Product | null;
+  setQuickViewProduct: (product: Product | null) => void;
   addToCart: (
     product: Product,
     options?: { color?: string; size?: string; quantity?: number; openDrawer?: boolean }
@@ -99,22 +117,34 @@ function parseHashRoute(): { route: PageRoute; slug: string | null } {
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const initialHash = parseHashRoute();
+  const [theme, setTheme] = useState<ThemeMode>(() => storageService.getTheme());
   const [route, setRoute] = useState<PageRoute>(initialHash.route);
   const [activeProductSlug, setActiveProductSlug] = useState<string | null>(initialHash.slug);
   const [filters, setFilters] = useState<ShopFiltersState>(DEFAULT_FILTERS);
   const [cart, setCart] = useState<CartItem[]>(() => storageService.getCart());
+  const [promoCode, setPromoCode] = useState<string>(() => storageService.getPromoCode());
   const [wishlistIds, setWishlistIds] = useState<string[]>(() => storageService.getWishlist());
   const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() =>
     storageService.getRecentlyViewed()
   );
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [lastOrder, setLastOrder] = useState<OrderRecord | null>(() => storageService.getLastOrder());
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    storageService.saveTheme(theme);
+  }, [theme]);
+
+  useEffect(() => {
     storageService.saveCart(cart);
   }, [cart]);
+
+  useEffect(() => {
+    storageService.savePromoCode(promoCode);
+  }, [promoCode]);
 
   useEffect(() => {
     storageService.saveWishlist(wishlistIds);
@@ -150,6 +180,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [dismissToast]
   );
 
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next: ThemeMode = prev === 'dark' ? 'light' : 'dark';
+      return next;
+    });
+  }, []);
+
   const navigate = useCallback(
     (
       nextRoute: PageRoute,
@@ -160,7 +197,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         searchQuery?: string;
       }
     ) => {
-      if (options?.category !== undefined || options?.collection !== undefined || options?.searchQuery !== undefined) {
+      if (
+        options?.category !== undefined ||
+        options?.collection !== undefined ||
+        options?.searchQuery !== undefined
+      ) {
         setFilters((prev) => ({
           ...prev,
           category: options.category ?? prev.category,
@@ -174,6 +215,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setActiveProductSlug(nextSlug);
       setIsCartOpen(false);
       setIsSearchOpen(false);
+      setQuickViewProduct(null);
 
       const targetHash =
         nextRoute === 'home'
@@ -210,6 +252,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const resetFilters = useCallback(() => {
     setFilters(DEFAULT_FILTERS);
   }, []);
+
+  const applyPromoCode = useCallback(
+    (rawCode: string) => {
+      const resolved = resolvePromoCode(rawCode);
+      if (!resolved) {
+        showToast(
+          'Invalid promo code',
+          'Try ZAYN10 for 10% off or FREESHIP for free delivery.',
+          'error'
+        );
+        return false;
+      }
+      setPromoCode(resolved.code);
+      showToast('Promo code applied', `${resolved.code} — ${resolved.label}`);
+      return true;
+    },
+    [showToast]
+  );
+
+  const removePromoCode = useCallback(() => {
+    setPromoCode('');
+    showToast('Promo code removed', undefined, 'info');
+  }, [showToast]);
 
   const addToCart = useCallback(
     (
@@ -284,6 +349,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = useCallback(() => {
     setCart([]);
+    setPromoCode('');
   }, []);
 
   const toggleWishlist = useCallback(
@@ -332,9 +398,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       .filter((p): p is Product => Boolean(p));
   }, [recentlyViewedIds]);
 
-  const cartTotals = useMemo(() => calculateCartTotals(cart), [cart]);
+  const cartTotals = useMemo(() => calculateCartTotals(cart, promoCode), [cart, promoCode]);
 
   const value: StoreContextValue = {
+    theme,
+    toggleTheme,
     route,
     activeProductSlug,
     navigate,
@@ -345,11 +413,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setSortBy,
     resetFilters,
     cart,
+    promoCode,
+    applyPromoCode,
+    removePromoCode,
     cartTotals,
     isCartOpen,
     setIsCartOpen,
     isSearchOpen,
     setIsSearchOpen,
+    quickViewProduct,
+    setQuickViewProduct,
     addToCart,
     updateCartQuantity,
     removeFromCart,
