@@ -8,6 +8,8 @@ import { SearchOverlay } from './components/SearchOverlay';
 import { ToastContainer } from './components/ToastContainer';
 import { StoreProvider, useStore } from './context/StoreContext';
 import { AboutPage } from './pages/AboutPage';
+import { AdminDashboardPage } from './pages/AdminDashboardPage';
+import { AdminLoginPage } from './pages/AdminLoginPage';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { ContactPage } from './pages/ContactPage';
@@ -17,7 +19,22 @@ import { ShopPage } from './pages/ShopPage';
 import { WishlistPage } from './pages/WishlistPage';
 
 function StorefrontShell() {
-  const { route } = useStore();
+  const { route, adminAuth } = useStore();
+
+  const isAuthorizedAdmin =
+    route === 'admin' &&
+    adminAuth.status === 'authenticated' &&
+    Boolean(adminAuth.user) &&
+    Boolean(adminAuth.accessToken);
+
+  if (isAuthorizedAdmin) {
+    return (
+      <>
+        <AdminDashboardPage />
+        <ToastContainer />
+      </>
+    );
+  }
 
   const renderPage = () => {
     switch (route) {
@@ -35,6 +52,9 @@ function StorefrontShell() {
         return <AboutPage />;
       case 'contact':
         return <ContactPage />;
+      case 'admin-login':
+      case 'admin':
+        return <AdminLoginPage />;
       case 'home':
       default:
         return <HomePage />;

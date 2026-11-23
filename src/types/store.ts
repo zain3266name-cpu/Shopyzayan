@@ -6,7 +6,30 @@ export type PageRoute =
   | 'cart'
   | 'checkout'
   | 'about'
-  | 'contact';
+  | 'contact'
+  | 'admin-login'
+  | 'admin';
+
+export type AdminSection =
+  | 'overview'
+  | 'products'
+  | 'orders'
+  | 'categories'
+  | 'inventory'
+  | 'settings';
+
+export interface AdminUserProfile {
+  id: string;
+  email: string;
+  role: string;
+}
+
+export interface AdminAuthState {
+  status: 'unauthenticated' | 'checking' | 'authenticated' | 'unconfigured' | 'denied';
+  user: AdminUserProfile | null;
+  accessToken: string | null;
+  errorMessage: string | null;
+}
 
 export type ProductCategory =
   | 'All'

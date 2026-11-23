@@ -1,4 +1,4 @@
-import { MessageCircle } from 'lucide-react';
+import { Lock, MessageCircle } from 'lucide-react';
 import { STORE_CONFIG } from '../config/storeConfig';
 import { useStore } from '../context/StoreContext';
 import { buildWhatsAppUrl } from '../services/orderService';
@@ -166,7 +166,18 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {STORE_CONFIG.brandName}. All rights reserved.
           </p>
-          <p>Prices in Pakistani Rupees (PKR) · 7-Day Easy Exchange</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <p>Prices in Pakistani Rupees (PKR) · 7-Day Easy Exchange</p>
+            <button
+              type="button"
+              onClick={() => navigate('admin-login')}
+              aria-label="Admin Portal Login"
+              className="inline-flex items-center gap-1 text-[11px] text-white/30 hover:text-white/65 transition-colors focus-visible:outline-2 focus-visible:outline-[#713BDB] rounded-xs"
+            >
+              <Lock className="w-2.5 h-2.5" />
+              <span>Admin Access</span>
+            </button>
+          </div>
         </div>
       </div>
     </footer>

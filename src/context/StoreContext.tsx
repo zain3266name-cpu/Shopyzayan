@@ -4,6 +4,12 @@ import { catalogService } from '../services/catalogService';
 import { calculateCartTotals, resolvePromoCode } from '../services/orderService';
 import { storageService } from '../services/storageService';
 import {
+  signInAndVerifyAdmin,
+  signOutAdmin,
+  verifyExistingAdminSession,
+} from '../services/adminAuthService';
+import {
+  AdminAuthState,
   CartItem,
   CollectionFilter,
   OrderRecord,
@@ -80,6 +86,13 @@ interface StoreContextValue {
   toasts: ToastMessage[];
   showToast: (title: string, description?: string, variant?: ToastMessage['variant']) => void;
   dismissToast: (id: string) => void;
+  adminAuth: AdminAuthState;
+  loginAdmin: (
+    email: string,
+    password: string
+  ) => Promise<{ ok: boolean; code?: string; message?: string }>;
+  logoutAdmin: () => Promise<void>;
+  verifyAdminSession: () => Promise<boolean>;
 }
 
 const DEFAULT_FILTERS: ShopFiltersState = {
@@ -110,10 +123,21 @@ function parseHashRoute(): { route: PageRoute; slug: string | null } {
       return { route: 'about', slug: null };
     case 'contact':
       return { route: 'contact', slug: null };
+    case 'admin-login':
+      return { route: 'admin-login', slug: null };
+    case 'admin':
+      return { route: 'admin', slug: null };
     default:
       return { route: 'home', slug: null };
   }
 }
+
+const INITIAL_ADMIN_AUTH: AdminAuthState = {
+  status: 'unauthenticated',
+  user: null,
+  accessToken: null,
+  errorMessage: null,
+};
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const initialHash = parseHashRoute();
@@ -132,6 +156,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [lastOrder, setLastOrder] = useState<OrderRecord | null>(() => storageService.getLastOrder());
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [adminAuth, setAdminAuth] = useState<AdminAuthState>(INITIAL_ADMIN_AUTH);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -400,6 +425,71 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const cartTotals = useMemo(() => calculateCartTotals(cart, promoCode), [cart, promoCode]);
 
+  const loginAdmin = useCallback(
+    async (email: string, password: string) => {
+      setAdminAuth({
+        status: 'checking',
+        user: null,
+        accessToken: null,
+        errorMessage: null,
+      });
+
+      const result = await signInAndVerifyAdmin(email, password);
+      if (result.ok) {
+        setAdminAuth({
+          status: 'authenticated',
+          user: result.admin,
+          accessToken: result.accessToken,
+          errorMessage: null,
+        });
+        showToast('Admin access verified', `Signed in as ${result.admin.email}`);
+        return { ok: true };
+      }
+
+      setAdminAuth({
+        status: result.code === 'NOT_CONFIGURED' ? 'unconfigured' : 'denied',
+        user: null,
+        accessToken: null,
+        errorMessage: result.message,
+      });
+      return { ok: false, code: result.code, message: result.message };
+    },
+    [showToast]
+  );
+
+  const verifyAdminSession = useCallback(async () => {
+    if (!adminAuth.accessToken) {
+      setAdminAuth(INITIAL_ADMIN_AUTH);
+      return false;
+    }
+
+    const result = await verifyExistingAdminSession(adminAuth.accessToken);
+    if (result.ok) {
+      setAdminAuth({
+        status: 'authenticated',
+        user: result.admin,
+        accessToken: result.accessToken,
+        errorMessage: null,
+      });
+      return true;
+    }
+
+    setAdminAuth({
+      status: result.code === 'NOT_CONFIGURED' ? 'unconfigured' : 'denied',
+      user: null,
+      accessToken: null,
+      errorMessage: result.message,
+    });
+    return false;
+  }, [adminAuth.accessToken]);
+
+  const logoutAdmin = useCallback(async () => {
+    await signOutAdmin();
+    setAdminAuth(INITIAL_ADMIN_AUTH);
+    showToast('Signed out', 'Admin session closed.', 'info');
+    navigate('home');
+  }, [navigate, showToast]);
+
   const value: StoreContextValue = {
     theme,
     toggleTheme,
@@ -440,6 +530,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     toasts,
     showToast,
     dismissToast,
+    adminAuth,
+    loginAdmin,
+    logoutAdmin,
+    verifyAdminSession,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
